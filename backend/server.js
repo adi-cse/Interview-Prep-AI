@@ -17,51 +17,48 @@ const {
 
 const app = express();
 
-// ✅ Connect DB
+// ✅ Connect Database
 connectDB();
 
-// ✅ Middleware
+// ✅ Body Parser
 app.use(express.json());
 
-// ✅ Proper CORS Setup (Development + Production)
-const allowedOrigins = [
-  "http://localhost:5173", // Local Vite
-  "https://interview-prep-frontend.onrender.com", // Render Frontend (CHANGE if needed)
-];
-
+// ✅ CORS (Works for both Local + Render)
 app.use(
   cors({
-    origin: function (origin, callback) {
-      if (!origin) return callback(null, true); // allow non-browser requests
-
-      if (allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
+    origin: true, // allow all origins dynamically
     credentials: true,
   })
 );
 
-// ✅ Routes
+// ✅ Handle Preflight Requests
+app.options("*", cors());
+
+// ================= ROUTES =================
+
+// Auth Routes
 app.use("/api/auth", authRoutes);
+
+// Session Routes
 app.use("/api/sessions", sessionRoutes);
+
+// Question Routes
 app.use("/api/questions", questionRoutes);
 
-// ✅ AI Routes
+// AI Routes
 app.post("/api/ai/generate-questions", protect, generateInterviewQuestions);
 app.post("/api/ai/generate-explanation", protect, generateConceptExplanation);
 
-// ✅ Static Uploads
+// Static uploads
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-// ✅ Health Check Route (Very Useful)
+// Health Check Route
 app.get("/", (req, res) => {
   res.send("Interview Prep AI Backend Running 🚀");
 });
 
-// ✅ Start Server
+// ================= START SERVER =================
+
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
