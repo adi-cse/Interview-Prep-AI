@@ -5,7 +5,7 @@ import SpinnerLoader from '../../components/Loader/SpinnerLoader';
 import axiosInstance from '../../utils/axiosInstance';
 import { API_PATHS } from '../../utils/apiPaths';
 
-const CreateSessionForm = () => {
+const CreateSessionForm = ({ onSuccess }) => {   // ✅ prop added
 
     const [formData, setFormData] = useState({
         role: "",
@@ -40,7 +40,7 @@ const CreateSessionForm = () => {
             setIsLoading(true);
             setError("");
 
-            // 🔥 1️⃣ AI Question Generate
+            // 1️⃣ Generate Questions
             const aiResponse = await axiosInstance.post(
                 API_PATHS.AI.GENERATE_QUESTIONS,
                 {
@@ -53,21 +53,24 @@ const CreateSessionForm = () => {
 
             const generatedQuestions = aiResponse.data?.data || [];
 
-            // 🔥 2️⃣ Create Session
+            // 2️⃣ Create Session
             const response = await axiosInstance.post(
                 API_PATHS.SESSION.CREATE,
                 {
                     role,
-                    experienceLevel: experience, // ✅ match schema
+                    experienceLevel: experience,
                     topicsToFocusOn: topicsToFocus
                         .split(",")
-                        .map(item => item.trim()), // ✅ array required
+                        .map(item => item.trim()),
                     description,
                     questions: generatedQuestions,
                 }
             );
 
             if (response.data?.session?._id) {
+
+                onSuccess && onSuccess();   // ✅ modal close + refresh
+
                 navigate(`/interview-prep/${response.data.session._id}`);
             }
 
@@ -90,7 +93,7 @@ const CreateSessionForm = () => {
             </h3>
 
             <p className="text-xs text-slate-700 mt-[5px] mb-3">
-                Fill out a few quick details and unlock your personalized set of interview questions and tips.
+                Fill out a few quick details and unlock your personalized set of interview questions.
             </p>
 
             <form onSubmit={handleCreateSession} className="flex flex-col gap-3">
