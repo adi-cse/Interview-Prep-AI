@@ -23,26 +23,17 @@ connectDB();
 // ✅ Middleware
 app.use(express.json());
 
-// ✅ Proper CORS Setup (Development + Production)
-const allowedOrigins = [
-  "http://localhost:5173", // Local Vite
-  "https://interview-prep-frontend.onrender.com", // Render Frontend (CHANGE if needed)
-];
-
+// ✅ FIXED CORS (Handles Preflight + Production + Localhost)
 app.use(
   cors({
-    origin: function (origin, callback) {
-      if (!origin) return callback(null, true); // allow non-browser requests
-
-      if (allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
+    origin: true, // allow dynamic origins
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     credentials: true,
   })
 );
+
+// Optional but safe (explicitly handle OPTIONS)
+app.options("*", cors());
 
 // ✅ Routes
 app.use("/api/auth", authRoutes);
@@ -56,7 +47,7 @@ app.post("/api/ai/generate-explanation", protect, generateConceptExplanation);
 // ✅ Static Uploads
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-// ✅ Health Check Route (Very Useful)
+// ✅ Health Check Route
 app.get("/", (req, res) => {
   res.send("Interview Prep AI Backend Running 🚀");
 });
