@@ -24,6 +24,7 @@ const Dashboard = () => {
     data: null,
   });
 
+  // ================= FETCH ALL SESSIONS =================
   const fetchAllSessions = async () => {
     try {
       setLoading(true);
@@ -36,6 +37,7 @@ const Dashboard = () => {
     }
   };
 
+  // ================= DELETE SESSION =================
   const deleteSession = async (sessionData) => {
     try {
       await axiosInstance.delete(
@@ -62,16 +64,18 @@ const Dashboard = () => {
     <DashboardLayout>
       <div className="relative container mx-auto pt-6 pb-16 px-4">
 
-        {/* 🌈 Gradient Background Glow */}
+        {/* Gradient Glow */}
         <div className="absolute top-0 left-0 w-full h-96 bg-gradient-to-r from-orange-200 via-yellow-100 to-white -z-10 blur-3xl opacity-60"></div>
 
+        {/* ================= LOADING ================= */}
         {loading ? (
           <div className="flex justify-center items-center h-60">
             <p className="text-gray-500 text-lg">Loading...</p>
           </div>
         ) : sessions.length === 0 ? (
+
+          /* ================= EMPTY STATE ================= */
           <>
-            {/* ================= HERO SECTION ================= */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
@@ -81,6 +85,7 @@ const Dashboard = () => {
               <h1 className="text-4xl font-bold text-gray-800">
                 Ace Your Interviews with Confidence 🚀
               </h1>
+
               <p className="text-gray-500 mt-4 max-w-xl mx-auto">
                 Create smart interview preparation sessions, track your
                 progress, and boost your confidence with structured practice.
@@ -95,9 +100,8 @@ const Dashboard = () => {
               </motion.button>
             </motion.div>
 
-            {/* ================= BENEFITS SECTION ================= */}
+            {/* Benefits */}
             <div className="grid md:grid-cols-3 gap-8 mt-10">
-
               {[
                 {
                   icon: <LuBrain size={30} />,
@@ -130,35 +134,28 @@ const Dashboard = () => {
                   <p className="text-gray-500 mt-2">{item.desc}</p>
                 </motion.div>
               ))}
-
-            </div>
-
-            {/* ================= PREVIEW STATS ================= */}
-            <div className="grid md:grid-cols-3 gap-6 mt-14">
-              {["100+", "50+", "95%"].map((stat, index) => (
-                <motion.div
-                  key={index}
-                  animate={{ scale: [1, 1.05, 1] }}
-                  transition={{ repeat: Infinity, duration: 3 }}
-                  className="bg-white shadow-lg rounded-2xl p-6 text-center"
-                >
-                  <p className="text-3xl font-bold text-orange-500">
-                    {stat}
-                  </p>
-                  <p className="text-gray-500 mt-2">
-                    {index === 0
-                      ? "Mock Questions"
-                      : index === 1
-                      ? "Role Templates"
-                      : "Success Rate"}
-                  </p>
-                </motion.div>
-              ))}
             </div>
           </>
         ) : (
+
+          /* ================= DASHBOARD WITH SESSIONS ================= */
           <>
-            {/* ================= STATS ================= */}
+            {/* Header + Add Button */}
+            <div className="flex justify-between items-center mb-8">
+              <h2 className="text-2xl font-bold text-gray-800">
+                Your Interview Sessions
+              </h2>
+
+              <button
+                onClick={() => setOpenCreateModal(true)}
+                className="flex items-center gap-2 bg-gradient-to-r from-[#FF9324] to-[#E99A4B] text-white px-5 py-2 rounded-full shadow-md hover:scale-105 transition"
+              >
+                <LuPlus size={18} />
+                Add Session
+              </button>
+            </div>
+
+            {/* Stats */}
             <div className="grid md:grid-cols-3 gap-6 mb-10">
               <div className="bg-white shadow-lg rounded-2xl p-6">
                 <h3 className="text-gray-500 text-sm">Total Sessions</h3>
@@ -184,7 +181,7 @@ const Dashboard = () => {
               </div>
             </div>
 
-            {/* ================= SESSION CARDS ================= */}
+            {/* Session Cards */}
             <div className="grid md:grid-cols-3 gap-6">
               {sessions.map((data, index) => (
                 <motion.div
@@ -218,6 +215,7 @@ const Dashboard = () => {
         )}
       </div>
 
+      {/* ================= CREATE MODAL ================= */}
       <Modal
         isOpen={openCreateModal}
         onClose={() => setOpenCreateModal(false)}
@@ -231,6 +229,7 @@ const Dashboard = () => {
         />
       </Modal>
 
+      {/* ================= DELETE MODAL ================= */}
       <Modal
         isOpen={openDeleteAlert.open}
         onClose={() =>
@@ -245,6 +244,7 @@ const Dashboard = () => {
           />
         </div>
       </Modal>
+
     </DashboardLayout>
   );
 };

@@ -26,7 +26,7 @@ app.use(express.json());
 // ✅ Proper CORS Setup (Development + Production)
 const allowedOrigins = [
   "http://localhost:5173", // Local Vite
-  "https://interview-prep-frontend.onrender.com", // Render Frontend (CHANGE if needed)
+  //"https://interview-prep-frontend.onrender.com", // Render Frontend (CHANGE if needed)
 ];
 
 app.use(

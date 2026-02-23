@@ -5,18 +5,20 @@ const axiosInstance = axios.create({
   baseURL: BASE_URL,
   timeout: 80000,
   headers: {
-    "Content-Type": "application/json",
     Accept: "application/json",
   },
 });
 
-// Request interceptor (Attach JWT token)
+// ===============================
+// ✅ REQUEST INTERCEPTOR
+// Automatically attach JWT token
+// ===============================
 axiosInstance.interceptors.request.use(
   (config) => {
-    const accessToken = localStorage.getItem("token");
+    const token = localStorage.getItem("token");
 
-    if (accessToken) {
-      config.headers.Authorization = `Bearer ${accessToken}`;
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
     }
 
     return config;
@@ -24,20 +26,33 @@ axiosInstance.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Response interceptor (Handle errors)
+// ===============================
+// ✅ RESPONSE INTERCEPTOR
+// Handle errors safely
+// ===============================
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response) {
-      if (error.response.status === 401) {
-        localStorage.removeItem("token");
-        window.location.href = "/login";
-      }
-
-      return Promise.reject(error.response.data);
+    // 🔥 If server not reachable
+    if (!error.response) {
+      return Promise.reject({
+        message: "Server not reachable. Please try again.",
+      });
     }
 
-    return Promise.reject({ message: "Network error" });
+    const { status, data } = error.response;
+
+    // 🔐 Only logout if token truly invalid
+    if (
+      status === 401 &&
+      data?.message &&
+      data.message.toLowerCase().includes("not authorized")
+    ) {
+      localStorage.removeItem("token");
+      window.location.href = "/";
+    }
+
+    return Promise.reject(data || { message: "Something went wrong" });
   }
 );
 

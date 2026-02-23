@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import HERO_IMG from "../assets/hpic.png";
 import { APP_FEATURES } from "../utils/data";
@@ -6,23 +6,20 @@ import { LuSparkles } from "react-icons/lu";
 import Modal from "../components/Modal";
 import Login from "./Auth/Login";
 import SignUp from "./Auth/SignUp";
-import { useContext } from "react";
 import { UserContext } from "../Context/userContext";
 import ProfileInfoCard from "../components/Cards/ProfileInfoCard";
 
-
 const LandingPage = () => {
-  const {user} = useContext(UserContext);
+  const { user } = useContext(UserContext);
   const navigate = useNavigate();
 
   const [openAuthModal, setOpenAuthModal] = useState(false);
   const [currentPage, setCurrentPage] = useState("login");
 
   const handleCTA = () => {
-    if(!user) {
+    if (!user) {
       setOpenAuthModal(true);
-      
-    }else{
+    } else {
       navigate("/dashboard");
     }
   };
@@ -38,16 +35,16 @@ const LandingPage = () => {
               Interview Prep AI
             </div>
 
-           {user ? (
-            <ProfileInfoCard />
-           ) : (
-           <button
-              className="bg-linear-to-r from-[#ff9324] to-[#e99a4b] text-sm font-semibold text-white px-7 py-2.5 rounded-full hover:bg-black hover:text-white border border-white transition-colors cursor-pointer"
-              onClick={() => setOpenAuthModal(true)}
-            >
-              Login / Sign Up
-            </button>
-           )}
+            {user ? (
+              <ProfileInfoCard />
+            ) : (
+              <button
+                className="bg-gradient-to-r from-[#ff9324] to-[#e99a4b] text-sm font-semibold text-white px-7 py-2.5 rounded-full hover:bg-black hover:text-white border border-white transition-colors cursor-pointer"
+                onClick={() => setOpenAuthModal(true)}
+              >
+                Login / Sign Up
+              </button>
+            )}
           </header>
 
           <div className="flex flex-col md:flex-row items-center">
@@ -72,7 +69,7 @@ const LandingPage = () => {
               <p className="text-[17px] text-gray-900 mr-0 md:mr-20 mb-6">
                 Get role-specific questions, expand answers when you need them,
                 dive deeper into concepts, and organize everything your way.
-                From preparation to mastry-your ultimate interview toolkit is here.
+                From preparation to mastery — your ultimate interview toolkit is here.
               </p>
 
               <button
@@ -87,16 +84,13 @@ const LandingPage = () => {
       </div>
 
       {/* Hero Image */}
-      <div className="w-full min-h-full relative z-10">
-        </div>
-        <section className="flex items-center justify-center -mt-36">
-          <img
-            src={HERO_IMG}
-            alt="Hero Image"
-            className="w-[80vw] rounded-lg"
-          />
-        </section>
-      
+      <section className="flex items-center justify-center -mt-36">
+        <img
+          src={HERO_IMG}
+          alt="Hero Image"
+          className="w-[80vw] rounded-lg"
+        />
+      </section>
 
       {/* Features */}
       <div className="w-full min-h-full bg-[#FFFCEF] mt-10">
@@ -150,22 +144,19 @@ const LandingPage = () => {
       <Modal
         isOpen={openAuthModal}
         onClose={() => {
-            setOpenAuthModal(false);
-            setCurrentPage("login");
+          setOpenAuthModal(false);
+          setCurrentPage("login");
         }}
-
         hideHeader
-        >
-            <div>
-                {currentPage === "login" && (
-                    <Login setCurrentPage={setCurrentPage} />
-
-                )}
-                {currentPage === "signup" && (
-                    <SignUp setCurrentPage={setCurrentPage} />
-                )}
-            </div>
-        
+      >
+        <div>
+          {currentPage === "login" && (
+            <Login setCurrentPage={setCurrentPage} />
+          )}
+          {currentPage === "signup" && (
+            <SignUp setCurrentPage={setCurrentPage} />
+          )}
+        </div>
       </Modal>
     </>
   );
