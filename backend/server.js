@@ -32,8 +32,6 @@ app.use(
   })
 );
 
-// Optional but safe (explicitly handle OPTIONS)
-app.options("*", cors());
 
 // ✅ Routes
 app.use("/api/auth", authRoutes);
