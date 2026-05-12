@@ -1,4 +1,4 @@
-export const BASE_URL = "http://localhost:8000";   //process.env.REACT_APP_BASE_URL |
+export const BASE_URL = "https://interview-prep-ai-985k.onrender.com";   //process.env.REACT_APP_BASE_URL |
 
 export const API_PATHS = {
   AUTH: {
